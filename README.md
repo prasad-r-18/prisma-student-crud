@@ -1,44 +1,71 @@
-# prisma-student-crud
+<h1 align="center">🎓 Prisma Student CRUD</h1>
 
-Minimal Student CRUD API with Node.js, Express, Prisma 6, and PostgreSQL.
+<p align="center">
+  A minimal REST API for managing students, built with Express, Prisma and PostgreSQL.
+</p>
 
-## Setup
+<p align="center">
+  <img src="https://img.shields.io/badge/Node.js-22-339933?logo=node.js&logoColor=white" alt="Node.js">
+  <img src="https://img.shields.io/badge/Express-4-000000?logo=express&logoColor=white" alt="Express">
+  <img src="https://img.shields.io/badge/Prisma-6-2D3748?logo=prisma&logoColor=white" alt="Prisma">
+  <img src="https://img.shields.io/badge/PostgreSQL-18-4169E1?logo=postgresql&logoColor=white" alt="PostgreSQL">
+</p>
 
-1. Create the database:
-```sql
-   CREATE DATABASE student_db;
-```
-2. Install dependencies:
+---
+
+## ✨ Features
+
+- Full CRUD for a `Student` (name, unique email, age)
+- Input validation and clear HTTP error codes
+- Database access only through Prisma Client
+- Credentials kept in `.env`, never committed
+
+## 🚀 Quick Start
+
 ```bash
-   npm install
-```
-3. Create a `.env` file in the project root:
-```
-   DATABASE_URL="postgresql://USER:PASSWORD@localhost:5432/student_db?schema=public"
-```
-4. Apply the migration:
-```bash
-   npx prisma migrate dev
-```
-5. Start the server:
-```bash
-   npm start
+# 1. Create the database (in psql)
+CREATE DATABASE student_db;
+
+# 2. Install dependencies
+npm install
+
+# 3. Add your connection string to a new .env file
+DATABASE_URL="postgresql://USER:PASSWORD@localhost:5432/student_db?schema=public"
+
+# 4. Apply the migration
+npx prisma migrate dev
+
+# 5. Start the server
+npm start
 ```
 
 Server runs at `http://localhost:3000`.
 
-## Endpoints (Postman)
+## 📡 API Endpoints
 
-| Method | URL | Body (JSON) |
-|---|---|---|
-| POST | `/students` | `{"name":"Asha","email":"asha@example.com","age":20}` |
-| GET | `/students` | none |
-| GET | `/students/:id` | none |
-| PUT | `/students/:id` | `{"name":"Asha K","email":"asha@example.com","age":21}` |
-| DELETE | `/students/:id` | none |
+| Method | Endpoint | Description | Body (JSON) |
+|---|---|---|---|
+| `POST` | `/students` | Create a student | `{"name":"Asha","email":"asha@example.com","age":20}` |
+| `GET` | `/students` | List all students | none |
+| `GET` | `/students/:id` | Get one student | none |
+| `PUT` | `/students/:id` | Update a student | `{"name":"Asha K","email":"asha@example.com","age":21}` |
+| `DELETE` | `/students/:id` | Delete a student | none |
 
-## Errors
+## ⚠️ Error Codes
 
-- `400` invalid input or id
-- `404` student not found
-- `409` email already exists
+| Code | Meaning |
+|---|---|
+| `400` | Invalid input or id |
+| `404` | Student not found |
+| `409` | Email already exists |
+
+## 🗂️ Structure
+
+```
+prisma-student-crud/
+├── prisma/
+│   ├── migrations/
+│   └── schema.prisma
+├── index.js
+└── package.json
+```
