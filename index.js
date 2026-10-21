@@ -7,15 +7,22 @@ app.use(express.json());
 
 // Validate body; returns error message or null
 function validate({ name, email, age }) {
-  if (typeof name !== "string" || !name.trim()) return "name is required";
-if (
-typeof email !== "string" ||
-!/^[^\s@]+@[^\s@]+.[^\s@]+$/.test(email.trim())
-) {
-return "valid email is required";
-}
+  if (typeof name !== "string" || !name.trim()) {
+    return "name is required";
+  }
+
+  if (
+    typeof email !== "string" ||
+    !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())
+  ) {
+    return "valid email is required";
+  }
+
   if (!Number.isInteger(age) || age < 3 || age > 120) {
-  return "age must be an integer between 3 and 120";
+    return "age must be an integer between 3 and 120";
+  }
+
+  return null;
 }
 
 // Parse :id; returns number or null
