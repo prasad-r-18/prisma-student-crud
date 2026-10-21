@@ -8,9 +8,14 @@ app.use(express.json());
 // Validate body; returns error message or null
 function validate({ name, email, age }) {
   if (typeof name !== "string" || !name.trim()) return "name is required";
-  if (typeof email !== "string" || !email.includes("@")) return "valid email is required";
-  if (!Number.isInteger(age) || age < 0) return "age must be a non-negative integer";
-  return null;
+if (
+typeof email !== "string" ||
+!/^[^\s@]+@[^\s@]+.[^\s@]+$/.test(email.trim())
+) {
+return "valid email is required";
+}
+  if (!Number.isInteger(age) || age < 3 || age > 120) {
+  return "age must be an integer between 3 and 120";
 }
 
 // Parse :id; returns number or null
@@ -24,19 +29,23 @@ app.post("/students", async (req, res) => {
     const { name, email, age } = req.body;
     const student = await prisma.student.create({ data: { name, email, age } });
     res.status(201).json(student);
-  } catch (e) {
-    if (e.code === "P2002") return res.status(409).json({ error: "email already exists" });
+} catch (e) {
+    if (e.code === "P2002") {
+      return res.status(409).json({ error: "email already exists" });
+    }
+    console.error("Create student error:", e);
     res.status(500).json({ error: "server error" });
-  }
+}
 });
 
 // Get all
 app.get("/students", async (req, res) => {
   try {
     res.json(await prisma.student.findMany({ orderBy: { id: "asc" } }));
-  } catch (e) {
-    res.status(500).json({ error: "server error" });
-  }
+} catch (e) {
+  console.error("Get students error:", e);
+  res.status(500).json({ error: "server error" });
+}
 });
 
 // Get one
@@ -47,9 +56,10 @@ app.get("/students/:id", async (req, res) => {
     const student = await prisma.student.findUnique({ where: { id } });
     if (!student) return res.status(404).json({ error: "student not found" });
     res.json(student);
-  } catch (e) {
-    res.status(500).json({ error: "server error" });
-  }
+} catch (e) {
+  console.error("Get student error:", e);
+  res.status(500).json({ error: "server error" });
+}
 });
 
 // Update
@@ -62,11 +72,13 @@ app.put("/students/:id", async (req, res) => {
     const { name, email, age } = req.body;
     const student = await prisma.student.update({ where: { id }, data: { name, email, age } });
     res.json(student);
-  } catch (e) {
-    if (e.code === "P2025") return res.status(404).json({ error: "student not found" });
-    if (e.code === "P2002") return res.status(409).json({ error: "email already exists" });
-    res.status(500).json({ error: "server error" });
-  }
+} catch (e) {
+  if (e.code === "P2025") return res.status(404).json({ error: "student not found" });
+  if (e.code === "P2002") return res.status(409).json({ error: "email already exists" });
+
+  console.error("Update student error:", e);
+  res.status(500).json({ error: "server error" });
+}
 });
 
 // Delete
@@ -76,10 +88,14 @@ app.delete("/students/:id", async (req, res) => {
   try {
     await prisma.student.delete({ where: { id } });
     res.json({ message: "student deleted" });
-  } catch (e) {
-    if (e.code === "P2025") return res.status(404).json({ error: "student not found" });
-    res.status(500).json({ error: "server error" });
+} catch (e) {
+  if (e.code === "P2025") {
+    return res.status(404).json({ error: "student not found" });
   }
+
+  console.error("Delete student error:", e);
+  res.status(500).json({ error: "server error" });
+}
 });
 
 const PORT = process.env.PORT || 3000;

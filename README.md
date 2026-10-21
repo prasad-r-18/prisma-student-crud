@@ -1,7 +1,7 @@
 <h1 align="center">🎓 Prisma Student CRUD</h1>
 
 <p align="center">
-  A minimal REST API for managing students, built with Express, Prisma and PostgreSQL.
+  A minimal REST API for managing students, built with Express.js, Prisma ORM, and PostgreSQL.
 </p>
 
 <p align="center">
@@ -15,57 +15,149 @@
 
 ## ✨ Features
 
-- Full CRUD for a `Student` (name, unique email, age)
-- Input validation and clear HTTP error codes
-- Database access only through Prisma Client
-- Credentials kept in `.env`, never committed
+* Full CRUD operations for students.
+* Input validation and appropriate HTTP status codes.
+* Database operations handled through Prisma Client.
+* Duplicate email detection.
+* Environment variables for database credentials.
+* Error handling for database operations.
+
+## 🛠️ Tech Stack
+
+* Node.js
+* Express.js
+* Prisma ORM 6
+* PostgreSQL
+* Postman
 
 ## 🚀 Quick Start
 
+### 1. Clone the repository
+
 ```bash
-# 1. Create the database (in psql)
-CREATE DATABASE student_db;
+git clone https://github.com/prasad-r-18/prisma-student-crud.git
+cd prisma-student-crud
+```
 
-# 2. Install dependencies
+### 2. Install dependencies
+
+```bash
 npm install
+```
 
-# 3. Add your connection string to a new .env file
+### 3. Create the database
+
+Create a PostgreSQL database named `student_db` if it doesn't already exist.
+
+```sql
+CREATE DATABASE student_db;
+```
+
+### 4. Configure environment variables
+
+Create a `.env` file in the project root:
+
+```env
 DATABASE_URL="postgresql://USER:PASSWORD@localhost:5432/student_db?schema=public"
+```
 
-# 4. Apply the migration
+Replace `USER` and `PASSWORD` with your PostgreSQL credentials.
+
+Never commit your actual `.env` file to GitHub.
+
+### 5. Apply database migrations
+
+```bash
 npx prisma migrate dev
+```
 
-# 5. Start the server
+### 6. Generate Prisma Client
+
+```bash
+npx prisma generate
+```
+
+### 7. Start the server
+
+```bash
 npm start
 ```
 
-Server runs at `http://localhost:3000`.
+The server runs at:
+
+`http://localhost:3000`
 
 ## 📡 API Endpoints
 
-| Method | Endpoint | Description | Body (JSON) |
-|---|---|---|---|
-| `POST` | `/students` | Create a student | `{"name":"Asha","email":"asha@example.com","age":20}` |
-| `GET` | `/students` | List all students | none |
-| `GET` | `/students/:id` | Get one student | none |
-| `PUT` | `/students/:id` | Update a student | `{"name":"Asha K","email":"asha@example.com","age":21}` |
-| `DELETE` | `/students/:id` | Delete a student | none |
+| Method | Endpoint        | Description              |
+| ------ | --------------- | ------------------------ |
+| POST   | `/students`     | Create a student         |
+| GET    | `/students`     | Retrieve all students    |
+| GET    | `/students/:id` | Retrieve a student by ID |
+| PUT    | `/students/:id` | Update a student         |
+| DELETE | `/students/:id` | Delete a student         |
 
-## ⚠️ Error Codes
+### Example: Create a student
 
-| Code | Meaning |
-|---|---|
-| `400` | Invalid input or id |
-| `404` | Student not found |
-| `409` | Email already exists |
+**POST** `/students`
 
-## 🗂️ Structure
+Request body:
 
+```json
+{
+  "name": "Asha",
+  "email": "asha@example.com",
+  "age": 20
+}
 ```
+
+### Example: Update a student
+
+**PUT** `/students/1`
+
+Request body:
+
+```json
+{
+  "name": "Asha K",
+  "email": "asha@example.com",
+  "age": 21
+}
+```
+
+## ⚠️ HTTP Error Codes
+
+| Code | Meaning                      |
+| ---- | ---------------------------- |
+| 201  | Student created successfully |
+| 400  | Invalid input or ID          |
+| 404  | Student not found            |
+| 409  | Email already exists         |
+| 500  | Internal server error        |
+
+## 🗂️ Project Structure
+
+```text
 prisma-student-crud/
 ├── prisma/
 │   ├── migrations/
 │   └── schema.prisma
+├── .env
+├── .gitignore
 ├── index.js
-└── package.json
+├── package.json
+└── README.md
 ```
+
+## 🧠 Prisma Concepts Demonstrated
+
+* **Schema:** Defines the Student model and its fields.
+* **Migration:** Applies database schema changes.
+* **Prisma Client:** Interacts with PostgreSQL without manually writing SQL for each CRUD operation.
+* **CRUD:** Creates, reads, updates, and deletes student records.
+
+---
+
+<p align="center">
+  Built to learn Prisma ORM with Express.js and PostgreSQL.
+</p>
